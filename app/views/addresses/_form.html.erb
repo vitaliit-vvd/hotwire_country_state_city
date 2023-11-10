@@ -1,4 +1,4 @@
-<%= form_with(model: address, class: "contents") do |form| %>
+<%= form_with(model: address, class: "contents", data: { controller: "form-reset" }) do |form| %>
   <% if address.errors.any? %>
     <div id="error_explanation" class="bg-red-50 text-red-500 px-3 py-2 font-medium rounded-lg mt-3">
       <h2><%= pluralize(address.errors.count, "error") %> prohibited this address from being saved:</h2>
@@ -11,20 +11,41 @@
     </div>
   <% end %>
 
-  <div class="my-5">
-    <%= form.label :country %>
-    <%= form.text_field :country, class: "block shadow rounded-md border border-gray-200 outline-none px-3 py-2 mt-2 w-full" %>
-  </div>
+  <%= turbo_frame_tag :cs_select do %>
+    <div data-controller="form-element">
+      <%= form.button "Validate",
+                      formaction: new_address_path,
+                      formmethod: :get,
+                      data: { form_element_target: "remoteBtn", turbo_frame: :cs_select } %>
+      <div class="my-5">
+        <%= form.label :country,
+                       style: "display: block" %>
+        <%= form.select :country,
+                        address.countries.invert,
+                        { include_blank: true },
+                        { class: "block shadow rounded-md border border-gray-200 outline-none px-3 py-2 mt-2 w-full",
+                          data: { action: "change->form-element#autosubmit" } }%>
+      </div>
 
-  <div class="my-5">
-    <%= form.label :state %>
-    <%= form.text_field :state, class: "block shadow rounded-md border border-gray-200 outline-none px-3 py-2 mt-2 w-full" %>
-  </div>
+      <div class="my-5">
+        <%= form.label :state,
+                       style: "display: block" %>
+        <%= form.select :state,
+                        address.states.invert,
+                        { include_blank: true },
+                        { class: "block shadow rounded-md border border-gray-200 outline-none px-3 py-2 mt-2 w-full",
+                          data: { action: "change->form-element#autosubmit" } } %>
+      </div>
 
-  <div class="my-5">
-    <%= form.label :city %>
-    <%= form.text_field :city, class: "block shadow rounded-md border border-gray-200 outline-none px-3 py-2 mt-2 w-full" %>
-  </div>
+      <div class="my-5">
+        <%= form.label :city,
+                       style: "display: block" %>
+        <%= form.select :city,
+                        address.cities, { include_blank: true },
+                        { class: "block shadow rounded-md border border-gray-200 outline-none px-3 py-2 mt-2 w-full" } %>
+      </div>
+    </div>
+  <% end %>
 
   <div class="my-5">
     <%= form.label :details %>
