@@ -1,0 +1,22 @@
+# PostgreSQL. Versions 9.3 and up are supported.
+
+default: &default
+  adapter: postgresql
+  encoding: unicode
+  pool: <%= ENV.fetch("RAILS_MAX_THREADS") { 5 } %>
+  username: postgres
+  password: postgres
+
+development:
+  <<: *default
+  database: hotwire_country_state_city_development
+
+test:
+  <<: *default
+  database: hotwire_country_state_city_test
+
+production:
+  <<: *default
+  database: hotwire_country_state_city_production
+  username: hotwire_country_state_city
+  password: <%= ENV["HOTWIRE_COUNTRY_STATE_CITY_DATABASE_PASSWORD"] %>
